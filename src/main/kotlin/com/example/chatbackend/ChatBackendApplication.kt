@@ -5,7 +5,7 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity
 import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository
 import org.springframework.data.annotation.Id
-import org.springframework.stereotype.Repository
+import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -27,7 +27,7 @@ data class Photo(
     var label: String? = null
 )
 
-@Repository
+@RepositoryRestResource
 interface PhotoRepository : DatastoreRepository<Photo, String>
 
 @RestController
@@ -37,6 +37,11 @@ class HelloController(
 
     @GetMapping("/")
     fun hello() = "Hello!"
+
+    @GetMapping("/all")
+    fun getAllPhotos(): MutableIterable<Photo> {
+        return photoRepository.findAll()
+    }
 
     @PostMapping("/photo")
     fun savePhoto(@RequestBody photo: Photo): String {
